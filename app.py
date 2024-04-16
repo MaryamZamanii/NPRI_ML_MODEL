@@ -1,5 +1,7 @@
 import streamlit as st
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 
 # Load the dataset
@@ -118,11 +120,16 @@ if not filtered_data.empty:
         input_data['Two years ago quantity'] = input_data['Last year quantity']
         input_data['Last year quantity'] = [prediction[0]]
 
-    # Display the predicted quantities for the next five years
-    for year, quantity in zip(range(2023, 2028), predicted_quantities):
-        st.write(f"<p class='predicted-quantity'>Predicted quantity for {year}:</p>", unsafe_allow_html=True)
-        st.write(f"<div class='feature-box'><p class='predicted-quantity'>{quantity:.5f}</p></div>", unsafe_allow_html=True)
+    # Plot the trend graph
+    plt.figure(figsize=(10, 6))
+    plt.plot(range(2023, 2028), predicted_quantities, marker='o', linestyle='-')
+    plt.xticks(range(2023, 2028))  # Set integer ticks on x-axis
+    plt.xlabel('Year')
+    plt.ylabel('Predicted Quantity')
+    plt.title(f'Trend of {selected_substance_name} Quantity for {selected_company_name} from 2023 to 2027')
+    plt.grid(True)
+
+    # Show the plot in Streamlit
+    st.pyplot(plt)
 else:
-    st.write(f"<p class='subheader-text'>No data available for {selected_substance_name} for {selected_company_name} for previous years.</p>", unsafe_allow_html=True)
-st.write("Chat Assistance:")
-st.write("""<iframe src="https://hf.co/chat/assistant/661b432f5693cfc26defd2c3" width="1000" height="600" frameborder="0"></iframe>""", unsafe_allow_html=True)
+    st.write(f"No data available for {selected_substance_name} for {selected_company_name} for previous years.")
